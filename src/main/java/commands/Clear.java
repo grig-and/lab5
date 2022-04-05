@@ -1,11 +1,17 @@
 package commands;
-
 import util.CollectionManager;
 
-public class Clear extends AbsCommand {
+/**
+ * Command clear class
+ */
+public class Clear implements Commandable {
     CollectionManager collection;
     final public static String description = "очистить коллекцию";
 
+    /**
+     * Constructor of clear command
+     * @param collection CollectionManager instance
+     */
     public Clear(CollectionManager collection) {
         this.collection = collection;
     }
@@ -13,6 +19,7 @@ public class Clear extends AbsCommand {
     @Override
     public void run(String arg) {
         collection.clear();
+        System.out.println("Успешно очищено");
     }
 
     public String getDescription() {

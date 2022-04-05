@@ -1,12 +1,22 @@
 package commands;
 
 import java.util.Map;
-
-public class Help extends AbsCommand {
+/**
+ * Command help class
+ */
+public class Help implements Commandable {
     final public static String description = "вывести справку по доступным командам";
-    private Map<String, AbsCommand> commands;
+    /**
+     * commands list
+     */
+    private Map<String, Commandable> commands;
 
-    public Help(Map<String, AbsCommand> commands) {
+    /**
+     * Constructor of help command
+     *
+     * @param commands commands list
+     */
+    public Help(Map<String, Commandable> commands) {
         this.commands = commands;
     }
 

@@ -2,11 +2,19 @@ package commands;
 
 import util.CollectionManager;
 
-public class SumOfOscarsCount extends AbsCommand {
+/**
+ * Command sum_of_oscars_count class
+ */
+public class SumOfOscarsCount implements Commandable {
     CollectionManager collection;
 
     final public static String description = "вывести сумму значений поля oscarsCount для всех элементов коллекции";
 
+    /**
+     * Constructor of sum_of_oscars_count command
+     *
+     * @param collection CollectionManager instance
+     */
     public SumOfOscarsCount(CollectionManager collection) {
         this.collection = collection;
     }
@@ -14,7 +22,7 @@ public class SumOfOscarsCount extends AbsCommand {
 
     @Override
     public void run(String arg) {
-        System.out.println(collection.getSumOscars());
+        System.out.println("Сумма оскаров: " + collection.getSumOscars());
     }
 
     public String getDescription() {

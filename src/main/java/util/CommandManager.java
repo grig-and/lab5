@@ -1,12 +1,16 @@
-package commands;
+package util;
 
-import util.CollectionManager;
+import commands.*;
+import exceptions.InvalidArgumentException;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Command manager class
+ */
 public class CommandManager {
-    private Map<String, AbsCommand> commands = new HashMap<>();
+    private Map<String, Commandable> commands = new HashMap<>();
 
     public CommandManager(CollectionManager collectionManager) {
         commands.put("help", new Help(commands));
@@ -17,7 +21,7 @@ public class CommandManager {
         commands.put("remove_key", new RemoveKey(collectionManager));
         commands.put("clear", new Clear(collectionManager));
         commands.put("save", new Save(collectionManager));
-        commands.put("execute_script", new ExecuteScript(collectionManager));
+        commands.put("execute_script", new ExecuteScript(this));
         commands.put("exit", new Exit());
         commands.put("remove_greater", new RemoveGreater(collectionManager));
         commands.put("replace_if_greater", new ReplaceIfGreater(collectionManager));
@@ -28,7 +32,18 @@ public class CommandManager {
 
     }
 
+    /**
+     * Runs command
+     *
+     * @param args arguments for run command
+     */
     public void run(String[] args) {
-       commands.get(args[0]).run(args.length > 1 ? args[1] : null);
+        try {
+            commands.get(args[0]).run(args.length > 1 ? args[1] : null);
+        } catch (NullPointerException e) {
+            System.out.println("Нет такой команды. Вызовите help для справки по командам.");
+        } catch (InvalidArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

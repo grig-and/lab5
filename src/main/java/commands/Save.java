@@ -2,10 +2,18 @@ package commands;
 
 import util.CollectionManager;
 
-public class Save extends AbsCommand {
+/**
+ * Command save class
+ */
+public class Save implements Commandable {
     CollectionManager collection;
     final public static String description = "сохранить коллекцию в файл";
 
+    /**
+     * Constructor of save command
+     *
+     * @param collection CollectionManager instance
+     */
     public Save(CollectionManager collection) {
         this.collection = collection;
     }
@@ -13,6 +21,7 @@ public class Save extends AbsCommand {
     @Override
     public void run(String arg) {
         collection.save();
+        System.out.println("Сохранено");
     }
 
     public String getDescription() {

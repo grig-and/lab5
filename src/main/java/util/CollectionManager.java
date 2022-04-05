@@ -4,19 +4,30 @@ import content.Movie;
 import content.MovieGenre;
 
 import java.time.LocalDate;
-import java.util.NavigableMap;
+import java.util.*;
 
+/**
+ * Collection manager class
+ */
 public class CollectionManager {
-    private NavigableMap<Long, Movie> movies;
+    private TreeMap<Long, Movie> movies;
     private FileManager file;
     private LocalDate date;
 
-    public CollectionManager(FileManager fileManager){
+    /**
+     * Constructor
+     *
+     * @param fileManager FileManager
+     */
+    public CollectionManager(FileManager fileManager) {
         this.file = fileManager;
         this.movies = file.read();
         this.date = LocalDate.now();
     }
 
+    /**
+     * Clear collection
+     */
     public void clear() {
         movies.clear();
     }
@@ -24,57 +35,152 @@ public class CollectionManager {
     @Override
     public String toString() {
         String str = "";
-        for (Movie movie : movies.values()) {
-            str += movie.toString() + "\n";
+        for (Long k : movies.keySet()) {
+            str += k + ":\n" + movies.get(k).toString() + "\n";
+        }
+        if (str.isEmpty()) {
+            str += "Коллекция пуста\n";
         }
         return str;
     }
 
+    /**
+     * Filter movie greater then genre
+     *
+     * @param genre MovieGenre for filter
+     * @return filtered movies
+     */
     public String filterGreaterThanGenre(MovieGenre genre) {
         String str = "";
         for (Movie movie : movies.values()) {
-            if (movie.getGenre().compareTo(genre) > 0){
-                str += movie.toString() + "\n";
+            if (movie.getGenre() == null) {
+                continue;
+            }
+            if (movie.getGenre().compareTo(genre) > 0) {
+                str += movie + "\n";
             }
         }
         return str;
     }
 
+    /**
+     * @return info about collection
+     */
     public String getInfo() {
-        return "type: TreeMap\n" +"date: " + date +"\nsize: " + movies.size();
+        return "type: TreeMap\n" + "date: " + date + "\nsize: " + movies.size();
     }
 
+    /**
+     * Save to CSV
+     */
     public void save() {
+        file.save();
     }
 
-    public void insert(Movie movie) {
-        movies.put(movie.getId(), movie);
+    /**
+     * @param key key
+     * @return is collection contains key
+     */
+    public boolean contains(long key) {
+        return movies.containsKey(key);
     }
 
+    public boolean containsID(long id) {
+        for (Movie m : movies.values()) {
+            if (m.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Insert movie by key
+     *
+     * @param key   key
+     * @param movie movie
+     */
+    public void insert(long key, Movie movie) {
+        movies.put(key, movie);
+    }
+
+    /**
+     * @return movies in ascending by OscarsCount orfer
+     */
     public String getAscending() {
-        return null;
+        Map<Long, Movie> sorted = new TreeMap<>((k1, k2) -> {
+            Movie v1 = movies.get(k1);
+            Movie v2 = movies.get(k2);
+            if (v1.getOscarsCount() > v2.getOscarsCount()) {
+                return 1;
+            } else if (v1.getOscarsCount() == v2.getOscarsCount()) {
+                return 0;
+            } else {
+                return -1;
+            }
+        });
+        sorted.putAll(movies);
+
+        String str = "";
+        for (Long k : sorted.keySet()) {
+            str += k + ":\n" + sorted.get(k).toString() + "\n";
+        }
+        if (str.isEmpty()) {
+            str += "Коллекция пуста\n";
+        }
+        return str;
+
     }
 
-    public void removeGreater(int n) {
+    /**
+     * Remove all elements with OC > entered
+     *
+     * @param movie movie for comparation
+     * @return n of removed elements
+     */
+    public int removeGreater(Movie movie) {
+        int i = 0;
         for (Long k : movies.keySet()) {
-            if (movies.get(k).getOscarsCount() > n){
+            if (movies.get(k).getOscarsCount() > movie.getOscarsCount()) {
                 movies.remove(k);
+                i += 1;
             }
         }
+        return i;
     }
 
-    public void removeGreaterKey(long key) {
-        for (Long k : movies.keySet()) {
-            if (k > key){
-                movies.remove(k);
+    /**
+     * Remove all with key > entered key
+     *
+     * @param key key
+     * @return n of removed elements
+     */
+    public int removeGreaterKey(long key) {
+        int i = 0;
+
+        Iterator iterator = movies.keySet().iterator();
+        while (iterator.hasNext()) {
+            Long k = (Long) iterator.next();
+            if (k > key) {
+                iterator.remove();
+                i += 1;
             }
         }
+        return i;
     }
 
+    /**
+     * Remove by key
+     *
+     * @param key key
+     */
     public void removeKey(Long key) {
-       movies.remove(key);
+        movies.remove(key);
     }
 
+    /**
+     * @return sum of oscars
+     */
     public int getSumOscars() {
         int n = 0;
         for (Movie movie : movies.values()) {
@@ -83,7 +189,34 @@ public class CollectionManager {
         return n;
     }
 
-    public void update(Movie upd) {
-        movies.replace(upd.getId(), upd);
+    /**
+     * Update existing element
+     *
+     * @param id    id
+     * @param movie movie
+     */
+    public void update(long id, Movie movie) {
+        for (Long k : movies.keySet()) {
+            if (movies.get(k).getId() == id) {
+                movies.put(k, movie);
+                return;
+            }
+        }
     }
+
+    /**
+     * Replace if OC greater
+     *
+     * @param key   key
+     * @param movie movie
+     */
+    public void replaceIfGreater(long key, Movie movie) {
+        if (movies.get(key).getOscarsCount() < movie.getOscarsCount()) {
+            movies.put(key, movie);
+            System.out.println("Заменено");
+        } else {
+            System.out.println("Не заменено");
+        }
+    }
+
 }

@@ -1,6 +1,9 @@
 package commands;
 
-public class Exit extends AbsCommand {
+/**
+ * Command exit class
+ */
+public class Exit implements Commandable {
     final public static String description = "завершить программу";
 
     @Override

@@ -1,26 +1,40 @@
 package content;
 
+import exceptions.InvalidParameterException;
+import org.apache.commons.lang3.ArrayUtils;
+import util.CLIManager;
+
 import java.time.LocalDate;
-import java.util.NavigableSet;
+import java.time.format.DateTimeParseException;
+import java.util.HashSet;
 import java.util.Objects;
 
+/**
+ * Movie class
+ */
 public class Movie {
-
-
+    private static long lastId = 1;
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
     private java.time.LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     private Integer oscarsCount; //Значение поля должно быть больше 0, Поле не может быть null
 
-
     private MovieGenre genre; //Поле может быть null
     private MpaaRating mpaaRating; //Поле может быть null
     private Person operator; //Поле может быть null
 
 
-    public Movie(long id, String name, Coordinates coordinates, Integer oscarsCount, MovieGenre genre, MpaaRating mpaaRating, Person operator) {
-        this.id = id;
+    /**
+     * @param name        Name
+     * @param coordinates Coordinates
+     * @param oscarsCount Number of Oscars
+     * @param genre       Genre
+     * @param mpaaRating  Mpaa rating
+     * @param operator    Operator
+     */
+    public Movie(String name, Coordinates coordinates, Integer oscarsCount, MovieGenre genre, MpaaRating mpaaRating, Person operator) {
+        this.id = ++lastId;
         this.creationDate = java.time.LocalDate.now();
         this.name = name;
         this.coordinates = coordinates;
@@ -30,38 +44,220 @@ public class Movie {
         this.operator = operator;
     }
 
+    /**
+     * @param id           id
+     * @param creationDate date of create
+     * @param name         Name
+     * @param coordinates  Coordinates
+     * @param oscarsCount  Number of Oscars
+     * @param genre        Genre
+     * @param mpaaRating   Mpaa rating
+     * @param operator     Operator
+     */
+    public Movie(long id, LocalDate creationDate, String name, Coordinates coordinates, Integer oscarsCount, MovieGenre genre, MpaaRating mpaaRating, Person operator) {
+        this.id = id;
+        this.creationDate = creationDate;
+        this.name = name;
+        this.coordinates = coordinates;
+        this.oscarsCount = oscarsCount;
+        this.genre = genre;
+        this.mpaaRating = mpaaRating;
+        this.operator = operator;
+    }
+
+    /**
+     * Prompt a movie from user
+     *
+     * @return requested movie
+     */
+    public static Movie prompt() {
+        String name = promptName();
+        Coordinates coordinates = Coordinates.prompt();
+        int oscarsCount = promptOC();
+        MovieGenre genre = MovieGenre.prompt();
+        MpaaRating mpaaRating = MpaaRating.prompt();
+        Person operator = Person.prompt();
+
+
+        return new Movie(
+                name,
+                coordinates,
+                oscarsCount,
+                genre,
+                mpaaRating,
+                operator
+        );
+    }
+
+    /**
+     * Prompt oscars count from user
+     *
+     * @return requested oscars count
+     */
+    private static int promptOC() {
+        String str = CLIManager.prompt("Кол-во оскаров: ");
+        try {
+            return parseOC(str);
+        } catch (InvalidParameterException e) {
+            System.out.println(e.getMessage());
+            return promptOC();
+        }
+    }
+
+    /**
+     * @param str string for parse
+     * @return oscars count
+     * @throws InvalidParameterException
+     */
+    private static int parseOC(String str) throws InvalidParameterException {
+        int oscarsCount;
+        try {
+            oscarsCount = Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            throw new InvalidParameterException("Кол-во оскаров должно быть числом");
+        }
+        if (oscarsCount <= 0) {
+            throw new InvalidParameterException("Кол-во оскаров должно быть больше 0");
+        }
+        return oscarsCount;
+    }
+
+    /**
+     * Prompt name from user
+     *
+     * @return requested name
+     */
+    private static String promptName() {
+        String str = CLIManager.prompt("Название: ");
+        try {
+            return parseName(str);
+        } catch (InvalidParameterException e) {
+            System.out.println(e.getMessage());
+        }
+        return promptName();
+    }
+
+    /**
+     * @param str string for parse
+     * @return name
+     * @throws InvalidParameterException
+     */
+    private static String parseName(String str) throws InvalidParameterException {
+        if (str.isEmpty()) {
+            throw new InvalidParameterException("Название не может быть пустым");
+        }
+        return str;
+    }
+
+
+    /**
+     * @return genre
+     */
     public MovieGenre getGenre() {
         return genre;
     }
 
+    /**
+     * @return oscars count
+     */
     public Integer getOscarsCount() {
         return oscarsCount;
     }
 
+    /**
+     * @return id
+     */
     public long getId() {
         return id;
     }
 
-    public static Movie createMovie(long id, String[] data) {
+    /**
+     * Used ids
+     */
+    private static HashSet<Long> ids = new HashSet<>();
+
+    /**
+     * @param str string for parse
+     * @return id
+     * @throws InvalidParameterException
+     */
+    private static long parseId(String str) throws InvalidParameterException {
+        long id = Long.parseLong(str);
+        if (id <= 0) {
+            throw new InvalidParameterException("id должен быть > 0");
+        }
+        if (ids.contains(id)) {
+            throw new InvalidParameterException("id не уникален");
+        }
+        ids.add(id);
+        return id;
+    }
+
+    /**
+     * Movie from array
+     *
+     * @param data array  from CSV
+     * @return movie
+     * @throws InvalidParameterException
+     */
+    public static Movie createMovie(String[] data) throws InvalidParameterException {
+        long id = parseId(data[0]);
+        if (id > lastId) lastId = id;
+        LocalDate date = parseDate(data[1]);
+        String name = parseName(data[2]);
+        float x = Coordinates.parseX(data[3]);
+        Integer y = Coordinates.parseY(data[4]);
+        Coordinates coordinates = new Coordinates(x, y);
+        int oscarsCount = parseOC(data[5]);
+        MovieGenre genre = MovieGenre.parse(data[6]);
+        MpaaRating mpaaRating = MpaaRating.parse(data[7]);
+        String nameP = Person.parseName(data[8]);
+        long height = Person.parseHeight(data[9]);
+        String passportID = Person.parsePID(data[10]);
+        Color hairColor = Color.parse(data[11]);
+        Country nationality = Country.parse(data[12]);
+
+        Person operator = new Person(nameP, height, passportID, hairColor, nationality);
         Movie movie = new Movie(
                 id,
-                data[0],
-                new Coordinates(
-                        Float.parseFloat(data[1]),
-                        Integer.parseInt(data[2])
-                ),
-                Integer.parseInt(data[4]),
-                MovieGenre.valueOf(data[5]),
-                MpaaRating.valueOf(data[6]),
-                new Person(
-                        data[7],
-                        Long.parseLong(data[8]),
-                        data[9],
-                        Color.valueOf(data[10]),
-                        Country.valueOf(data[11])
-                )
+                date,
+                name,
+                coordinates,
+                oscarsCount,
+                genre,
+                mpaaRating,
+                operator
         );
         return movie;
+    }
+
+    /**
+     * @param str string for parse
+     * @return date
+     * @throws InvalidParameterException
+     */
+    private static LocalDate parseDate(String str) throws InvalidParameterException {
+        try {
+            return LocalDate.parse(str);
+        } catch (DateTimeParseException e) {
+            throw new InvalidParameterException("Неверная дата");
+        }
+    }
+
+    /**
+     * @return movie as String array
+     */
+    public String[] getCSVMovie() {
+        String[] arr = ArrayUtils.addAll(new String[]{Long.toString(id),
+                        creationDate.toString(),
+                        name,
+                        Float.toString(coordinates.getX()),
+                        coordinates.getY().toString(),
+                        oscarsCount.toString(),
+                        genre + "",
+                        mpaaRating + ""},
+                operator.getCSVPerson());
+        return arr;
     }
 
     @Override
@@ -79,13 +275,14 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie: " +
-                "\nname= " + name +
-                "\ncoordinates=" + coordinates +
-                "\ncreationDate=" + creationDate +
-                "\noscarsCount=" + oscarsCount +
-                "\ngenre=" + genre +
-                "\nmpaaRating=" + mpaaRating +
-                "\noperator=" + operator;
+        return "Фильм\n" +
+                "id: " + id +
+                "\nНазвание: " + name +
+                coordinates +
+                "\nДата создания: " + creationDate +
+                "\nКол-во оскаров: " + oscarsCount +
+                "\nЖанр: " + (genre == null ? "не установлено" : genre) +
+                "\nMpaa рейтинг: " + (mpaaRating == null ? "не установлено" : mpaaRating) +
+                "\nОператор: " + (operator == null ? "не установлено" : operator) + "\n";
     }
 }
