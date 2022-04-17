@@ -100,7 +100,7 @@ public class FileManager {
 
             for (String key : movies.keySet()) {
                 writer.writeNext(movies.get(key).getCSVMovie(key), false);
-                System.out.println(Arrays.toString(movies.get(key).getCSVMovie()));
+                System.out.println(Arrays.toString(movies.get(key).getCSVMovie(key)));
             }
             writer.close();
 
