@@ -62,7 +62,7 @@ public class FileManager {
                 Movie movie;
                 try {
                     movie = Movie.createMovie(line);
-                    tmpMovies.put(Long.toString(ind), movie);
+                    tmpMovies.put(line[0], movie);
 
                 } catch (InvalidParameterException e) {
                     System.out.println("Ошибка на строке " + ind + ": " + e.getMessage() + ". Пропуск строки.");
