@@ -44,6 +44,14 @@ public class FileManager {
     private TreeMap<Long, Movie> open(String src) {
         TreeMap<Long, Movie> tmpMovies = new TreeMap<>();
         Path path = Paths.get(src);
+        if (!Files.isRegularFile(path)) {
+            if (Files.isDirectory(path)) {
+                System.out.println("Требуется файл а не директория");
+            } else {
+                System.out.println("Файл не найден");
+            }
+            System.exit(1);
+        }
         long ind = 0;
         try {
             BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
