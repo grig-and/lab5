@@ -1,5 +1,6 @@
 package util;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -23,7 +24,12 @@ public class CLIManager {
      */
     public void start() {
         while (true) {
-            commandManager.run(promptArgs());
+            try {
+                commandManager.run(promptArgs());
+            } catch (NoSuchElementException e) {
+                System.out.println("Нажат Ctrl+D - выхожу из программы");
+                System.exit(0);
+            }
         }
     }
 
