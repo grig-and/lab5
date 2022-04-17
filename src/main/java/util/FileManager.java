@@ -98,9 +98,9 @@ public class FileManager {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(src));
 
-            for (Movie movie : movies.values()) {
-                writer.writeNext(movie.getCSVMovie(), false);
-                System.out.println(Arrays.toString(movie.getCSVMovie()));
+            for (String key : movies.keySet()) {
+                writer.writeNext(movies.get(key).getCSVMovie(key), false);
+                System.out.println(Arrays.toString(movies.get(key).getCSVMovie()));
             }
             writer.close();
 
