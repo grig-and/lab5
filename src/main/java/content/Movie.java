@@ -246,9 +246,10 @@ public class Movie {
 
     /**
      * @return movie as String array
+     * @param key
      */
-    public String[] getCSVMovie() {
-        String[] arr = ArrayUtils.addAll(new String[]{Long.toString(id),
+    public String[] getCSVMovie(String key) {
+        String[] arr = ArrayUtils.addAll(new String[]{key, Long.toString(id),
                         creationDate.toString(),
                         name,
                         Float.toString(coordinates.getX()),
