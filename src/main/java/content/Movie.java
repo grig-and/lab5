@@ -95,7 +95,7 @@ public class Movie {
      * @return requested oscars count
      */
     private static int promptOC() {
-        String str = CLIManager.prompt("Кол-во оскаров: ");
+        String str = CLIManager.prompt("Кол-во оскаров (целое число, > 0): ");
         try {
             return parseOC(str);
         } catch (InvalidParameterException e) {
@@ -114,7 +114,7 @@ public class Movie {
         try {
             oscarsCount = Integer.parseInt(str);
         } catch (NumberFormatException e) {
-            throw new InvalidParameterException("Кол-во оскаров должно быть числом");
+            throw new InvalidParameterException("Кол-во оскаров должно быть целым числом");
         }
         if (oscarsCount <= 0) {
             throw new InvalidParameterException("Кол-во оскаров должно быть больше 0");

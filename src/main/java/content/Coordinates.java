@@ -77,7 +77,7 @@ public class Coordinates {
     private static Integer promptY() {
         System.out.println(" Введите число");
         try {
-            return parseY(CLIManager.prompt(" y: "));
+            return parseY(CLIManager.prompt(" y (целое число): "));
         } catch (InvalidParameterException e) {
             System.out.println(e.getMessage());
             return promptY();
