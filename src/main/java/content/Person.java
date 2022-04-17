@@ -103,7 +103,7 @@ public class Person {
      */
     private static String promptPID() {
         try {
-            return parsePID(CLIManager.prompt(" PassportID: "));
+            return parsePID(CLIManager.prompt(" PassportID (не более 37 символов): "));
         } catch (InvalidParameterException e) {
             System.out.println(e.getMessage());
             return promptPID();
