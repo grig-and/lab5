@@ -85,7 +85,7 @@ public class CollectionManager {
         return movies.containsKey(key);
     }
 
-    public boolean containsID(String id) {
+    public boolean containsID(Long id) {
         for (Movie m : movies.values()) {
             if (m.getId() == id) {
                 return true;
@@ -195,7 +195,7 @@ public class CollectionManager {
      * @param id    id
      * @param movie movie
      */
-    public void update(String id, Movie movie) {
+    public void update(Long id, Movie movie) {
         for (String k : movies.keySet()) {
             if (movies.get(k).getId() == id) {
                 movies.put(k, movie);
