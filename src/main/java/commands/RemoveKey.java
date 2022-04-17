@@ -21,16 +21,13 @@ public class RemoveKey implements Commandable {
 
     @Override
     public void run(String arg) throws InvalidArgumentException {
-        long key;
-        try {
-            key = Long.parseLong(arg);
-        } catch (NumberFormatException e) {
+        if (arg.length() == 0){
             throw new InvalidArgumentException("Эта команда требует аргумент: ключ элемента коллекции");
         }
-        if (!collection.contains(key)) {
+        if (!collection.contains(arg)) {
             throw new InvalidArgumentException("Элемента с таким ключом не существует");
         }
-        collection.removeKey(key);
+        collection.removeKey(arg);
         System.out.println("Успешно удалено");
     }
 

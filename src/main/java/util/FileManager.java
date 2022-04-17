@@ -22,7 +22,7 @@ import com.opencsv.CSVWriter;
  * File manager class
  */
 public class FileManager {
-    private TreeMap<Long, Movie> movies;
+    private TreeMap<String, Movie> movies;
     private String src;
 
     /**
@@ -41,8 +41,8 @@ public class FileManager {
      * @param src string path
      * @return TreeMap of movies
      */
-    private TreeMap<Long, Movie> open(String src) {
-        TreeMap<Long, Movie> tmpMovies = new TreeMap<>();
+    private TreeMap<String, Movie> open(String src) {
+        TreeMap<String, Movie> tmpMovies = new TreeMap<>();
         Path path = Paths.get(src);
         if (!Files.isRegularFile(path)) {
             if (Files.isDirectory(path)) {
@@ -62,7 +62,7 @@ public class FileManager {
                 Movie movie;
                 try {
                     movie = Movie.createMovie(line);
-                    tmpMovies.put(ind, movie);
+                    tmpMovies.put(Long.toString(ind), movie);
 
                 } catch (InvalidParameterException e) {
                     System.out.println("Ошибка на строке " + ind + ": " + e.getMessage() + ". Пропуск строки.");
@@ -87,7 +87,7 @@ public class FileManager {
     /**
      * @return movies
      */
-    public TreeMap<Long, Movie> read() {
+    public TreeMap<String, Movie> read() {
         return movies;
     }
 

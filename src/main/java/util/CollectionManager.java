@@ -10,7 +10,7 @@ import java.util.*;
  * Collection manager class
  */
 public class CollectionManager {
-    private TreeMap<Long, Movie> movies;
+    private TreeMap<String, Movie> movies;
     private FileManager file;
     private LocalDate date;
 
@@ -35,7 +35,7 @@ public class CollectionManager {
     @Override
     public String toString() {
         String str = "";
-        for (Long k : movies.keySet()) {
+        for (String k : movies.keySet()) {
             str += k + ":\n" + movies.get(k).toString() + "\n";
         }
         if (str.isEmpty()) {
@@ -81,11 +81,11 @@ public class CollectionManager {
      * @param key key
      * @return is collection contains key
      */
-    public boolean contains(long key) {
+    public boolean contains(String key) {
         return movies.containsKey(key);
     }
 
-    public boolean containsID(long id) {
+    public boolean containsID(Long id) {
         for (Movie m : movies.values()) {
             if (m.getId() == id) {
                 return true;
@@ -100,7 +100,7 @@ public class CollectionManager {
      * @param key   key
      * @param movie movie
      */
-    public void insert(long key, Movie movie) {
+    public void insert(String key, Movie movie) {
         movies.put(key, movie);
     }
 
@@ -108,7 +108,7 @@ public class CollectionManager {
      * @return movies in ascending by OscarsCount orfer
      */
     public String getAscending() {
-        Map<Long, Movie> sorted = new TreeMap<>((k1, k2) -> {
+        Map<String, Movie> sorted = new TreeMap<>((k1, k2) -> {
             Movie v1 = movies.get(k1);
             Movie v2 = movies.get(k2);
             if (v1.getOscarsCount() > v2.getOscarsCount()) {
@@ -122,7 +122,7 @@ public class CollectionManager {
         sorted.putAll(movies);
 
         String str = "";
-        for (Long k : sorted.keySet()) {
+        for (String k : sorted.keySet()) {
             str += k + ":\n" + sorted.get(k).toString() + "\n";
         }
         if (str.isEmpty()) {
@@ -140,7 +140,7 @@ public class CollectionManager {
      */
     public int removeGreater(Movie movie) {
         int i = 0;
-        for (Long k : movies.keySet()) {
+        for (String k : movies.keySet()) {
             if (movies.get(k).getOscarsCount() > movie.getOscarsCount()) {
                 movies.remove(k);
                 i += 1;
@@ -155,13 +155,13 @@ public class CollectionManager {
      * @param key key
      * @return n of removed elements
      */
-    public int removeGreaterKey(long key) {
+    public int removeGreaterKey(String key) {
         int i = 0;
 
         Iterator iterator = movies.keySet().iterator();
         while (iterator.hasNext()) {
-            Long k = (Long) iterator.next();
-            if (k > key) {
+            String k = (String) iterator.next();
+            if (k.compareTo(key)>0) {
                 iterator.remove();
                 i += 1;
             }
@@ -174,7 +174,7 @@ public class CollectionManager {
      *
      * @param key key
      */
-    public void removeKey(Long key) {
+    public void removeKey(String key) {
         movies.remove(key);
     }
 
@@ -195,8 +195,8 @@ public class CollectionManager {
      * @param id    id
      * @param movie movie
      */
-    public void update(long id, Movie movie) {
-        for (Long k : movies.keySet()) {
+    public void update(Long id, Movie movie) {
+        for (String k : movies.keySet()) {
             if (movies.get(k).getId() == id) {
                 movies.put(k, movie);
                 return;
@@ -210,7 +210,7 @@ public class CollectionManager {
      * @param key   key
      * @param movie movie
      */
-    public void replaceIfGreater(long key, Movie movie) {
+    public void replaceIfGreater(String key, Movie movie) {
         if (movies.get(key).getOscarsCount() < movie.getOscarsCount()) {
             movies.put(key, movie);
             System.out.println("Заменено");
