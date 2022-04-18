@@ -201,21 +201,21 @@ public class Movie {
      * @throws InvalidParameterException
      */
     public static Movie createMovie(String[] data) throws InvalidParameterException {
-        long id = parseId(data[0]);
+        long id = parseId(data[1]);
         if (id > lastId) lastId = id;
-        LocalDate date = parseDate(data[1]);
-        String name = parseName(data[2]);
-        float x = Coordinates.parseX(data[3]);
-        Integer y = Coordinates.parseY(data[4]);
+        LocalDate date = parseDate(data[2]);
+        String name = parseName(data[3]);
+        float x = Coordinates.parseX(data[4]);
+        Integer y = Coordinates.parseY(data[5]);
         Coordinates coordinates = new Coordinates(x, y);
-        int oscarsCount = parseOC(data[5]);
-        MovieGenre genre = MovieGenre.parse(data[6]);
-        MpaaRating mpaaRating = MpaaRating.parse(data[7]);
-        String nameP = Person.parseName(data[8]);
-        long height = Person.parseHeight(data[9]);
-        String passportID = Person.parsePID(data[10]);
-        Color hairColor = Color.parse(data[11]);
-        Country nationality = Country.parse(data[12]);
+        int oscarsCount = parseOC(data[6]);
+        MovieGenre genre = MovieGenre.parse(data[7]);
+        MpaaRating mpaaRating = MpaaRating.parse(data[8]);
+        String nameP = Person.parseName(data[9]);
+        long height = Person.parseHeight(data[10]);
+        String passportID = Person.parsePID(data[11]);
+        Color hairColor = Color.parse(data[12]);
+        Country nationality = Country.parse(data[13]);
 
         Person operator = new Person(nameP, height, passportID, hairColor, nationality);
         Movie movie = new Movie(
@@ -247,8 +247,9 @@ public class Movie {
     /**
      * @return movie as String array
      */
-    public String[] getCSVMovie() {
-        String[] arr = ArrayUtils.addAll(new String[]{Long.toString(id),
+    public String[] getCSVMovie(String str) {
+        String[] arr = ArrayUtils.addAll(new String[]{str,
+                        Long.toString(id),
                         creationDate.toString(),
                         name,
                         Float.toString(coordinates.getX()),

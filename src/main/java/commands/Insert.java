@@ -22,16 +22,13 @@ public class Insert implements Commandable {
 
     @Override
     public void run(String arg) throws InvalidArgumentException {
-        long key;
-        try {
-            key = Long.parseLong(arg);
-        } catch (NumberFormatException e) {
+        if (arg.length()==0){
             throw new InvalidArgumentException("Эта команда требует аргумент: ключ элемента коллекции");
         }
-        if (collection.contains(key)) {
+        if (collection.contains(arg)) {
             throw new InvalidArgumentException("Элемент с таким ключом уже существует");
         }
-        collection.insert(key, Movie.prompt());
+        collection.insert(arg, Movie.prompt());
         System.out.println("Фильм успешно добавлен");
     }
 

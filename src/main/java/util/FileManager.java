@@ -22,7 +22,7 @@ import com.opencsv.CSVWriter;
  * File manager class
  */
 public class FileManager {
-    private TreeMap<Long, Movie> movies;
+    private TreeMap<String, Movie> movies;
     private String src;
 
     /**
@@ -41,8 +41,8 @@ public class FileManager {
      * @param src string path
      * @return TreeMap of movies
      */
-    private TreeMap<Long, Movie> open(String src) {
-        TreeMap<Long, Movie> tmpMovies = new TreeMap<>();
+    private TreeMap<String, Movie> open(String src) {
+        TreeMap<String, Movie> tmpMovies = new TreeMap<>();
         Path path = Paths.get(src);
         long ind = 0;
         try {
@@ -54,7 +54,7 @@ public class FileManager {
                 Movie movie;
                 try {
                     movie = Movie.createMovie(line);
-                    tmpMovies.put(ind, movie);
+                    tmpMovies.put(line[0], movie);
 
                 } catch (InvalidParameterException e) {
                     System.out.println("Ошибка на строке " + ind + ": " + e.getMessage() + ". Пропуск строки.");
@@ -79,7 +79,7 @@ public class FileManager {
     /**
      * @return movies
      */
-    public TreeMap<Long, Movie> read() {
+    public TreeMap<String, Movie> read() {
         return movies;
     }
 
@@ -90,9 +90,9 @@ public class FileManager {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(src));
 
-            for (Movie movie : movies.values()) {
-                writer.writeNext(movie.getCSVMovie(), false);
-                System.out.println(Arrays.toString(movie.getCSVMovie()));
+            for (String key : movies.keySet()) {
+                writer.writeNext(movies.get(key).getCSVMovie(key), false);
+                System.out.println(Arrays.toString(movies.get(key).getCSVMovie(key)));
             }
             writer.close();
 
