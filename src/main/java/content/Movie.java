@@ -182,7 +182,13 @@ public class Movie {
      * @throws InvalidParameterException
      */
     private static long parseId(String str) throws InvalidParameterException {
-        long id = Long.parseLong(str);
+        long id = 0;
+        try{
+            id = Long.parseLong(str);
+        } catch (NumberFormatException e){
+            throw new InvalidParameterException("id должен быть целым числом");
+        }
+
         if (id <= 0) {
             throw new InvalidParameterException("id должен быть > 0");
         }
