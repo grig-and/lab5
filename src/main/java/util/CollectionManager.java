@@ -67,7 +67,7 @@ public class CollectionManager {
      * @return info about collection
      */
     public String getInfo() {
-        return "type: TreeMap\n" + "date: " + date + "\nsize: " + movies.size();
+        return "type: " + movies.getClass() + "\n" + "date: " + date + "\nsize: " + movies.size();
     }
 
     /**
