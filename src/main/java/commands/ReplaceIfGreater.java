@@ -23,16 +23,15 @@ public class ReplaceIfGreater implements Commandable {
 
     @Override
     public void run(String arg) throws InvalidArgumentException {
-        long key;
-        try {
-            key = Long.parseLong(arg);
-        } catch (NumberFormatException e) {
+
+        if (arg == null){
             throw new InvalidArgumentException("Эта команда требует аргумент: ключ элемента коллекции");
         }
-        if (!collection.contains(key)) {
+
+        if (!collection.contains(arg)) {
             throw new InvalidArgumentException("Элемент с таким ключом не существует");
         }
-        collection.replaceIfGreater(key, Movie.prompt());
+        collection.replaceIfGreater(arg, Movie.prompt());
     }
 
     public String getDescription() {

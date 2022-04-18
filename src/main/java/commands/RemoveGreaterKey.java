@@ -22,14 +22,11 @@ public class RemoveGreaterKey implements Commandable {
 
     @Override
     public void run(String arg) throws InvalidArgumentException {
-        long key;
-        try {
-            key = Long.parseLong(arg);
-        } catch (NumberFormatException e) {
+        if (arg == null){
             throw new InvalidArgumentException("Эта команда требует аргумент: ключ элемента коллекции");
         }
-//       
-        System.out.println("Удалено элементов: " + collection.removeGreaterKey(key));
+
+        System.out.println("Удалено элементов: " + collection.removeGreaterKey(arg));
     }
 
     public String getDescription() {
