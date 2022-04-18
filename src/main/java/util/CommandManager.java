@@ -37,13 +37,16 @@ public class CommandManager {
      *
      * @param args arguments for run command
      */
-    public void run(String[] args) {
+    public boolean run(String[] args) {
         try {
             commands.get(args[0]).run(args.length > 1 ? args[1] : null);
         } catch (NullPointerException e) {
             System.out.println("Нет такой команды. Вызовите help для справки по командам.");
+            return false;
         } catch (InvalidArgumentException e) {
             System.out.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 }
