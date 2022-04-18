@@ -22,7 +22,7 @@ public class Insert implements Commandable {
 
     @Override
     public void run(String arg) throws InvalidArgumentException {
-        if (arg.length()==0){
+        if (arg == null){
             throw new InvalidArgumentException("Эта команда требует аргумент: ключ элемента коллекции");
         }
         if (collection.contains(arg)) {
