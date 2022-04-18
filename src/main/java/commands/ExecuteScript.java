@@ -42,8 +42,12 @@ public class ExecuteScript implements Commandable {
             history.add(arg);
             BufferedReader reader = Files.newBufferedReader(Paths.get(arg), StandardCharsets.UTF_8);
             String line;
+            long i = 0;
             while ((line = reader.readLine()) != null) {
-                commandManager.run(CLIManager.parseArgs(line));
+                if (!commandManager.run(CLIManager.parseArgs(line))) {
+                    throw new InvalidArgumentException("Неверная команда на строке " + i + ": " + line);
+                }
+                i += 1;
             }
             System.out.println("Скрипт выполнен");
         } catch (InvalidPathException e) {
