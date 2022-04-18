@@ -41,7 +41,9 @@ public class CommandManager {
         try {
             commands.get(args[0]).run(args.length > 1 ? args[1] : null);
         } catch (NullPointerException e) {
-            System.out.println("Нет такой команды. Вызовите help для справки по командам.");
+            if (!args[0].isEmpty()){
+                System.out.println("Нет такой команды. Вызовите help для справки по командам.");
+            }
         } catch (InvalidArgumentException e) {
             System.out.println(e.getMessage());
         }
